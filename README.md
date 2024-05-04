@@ -1,2 +1,44 @@
 # zsh-colorize
 colorize various tools like tail head cat
+
+# zsh-colorize
+Updates current tab name in screen/tmux/byobu to whatever dir your in or command youre running
+
+
+### zinit
+
+```zsh
+zinit wait lucid for p1r473/zsh-colorize
+```
+
+### Zplug
+
+```zsh
+zplug "p1r473/zsh-colorize"
+```
+
+### Antigen
+
+```zsh
+antigen bundle p1r473/zsh-colorize
+```
+
+### Oh-My-Zsh
+
+```zsh
+git clone https://github.com/p1r473/zsh-colorize.git $ZSH_CUSTOM/plugins/zsh-colorize
+```
+
+```zsh
+plugins=(
+  #...
+  tab-title
+  )
+```
+
+### Manual
+
+```zsh
+git clone https://github.com/p1r473/zsh-colorize $ZSH_CUSTOM/plugins
+source $ZSH_CUSTOM/plugins/zsh-colorize/zsh-colorize/plugin.zsh
+```
