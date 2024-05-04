@@ -13,37 +13,37 @@ also provides a color library
 ### zinit
 
 ```zsh
-zinit wait lucid for p1r473/zsh-colorize
+zinit wait lucid for p1r473/zsh-color-logging
 ```
 
 ### Zplug
 
 ```zsh
-zplug "p1r473/zsh-colorize"
+zplug "p1r473/zsh-color-logging"
 ```
 
 ### Antigen
 
 ```zsh
-antigen bundle p1r473/zsh-colorize
+antigen bundle p1r473/zsh-color-logging
 ```
 
 ### Oh-My-Zsh
 
 ```zsh
-git clone https://github.com/p1r473/zsh-colorize.git $ZSH_CUSTOM/plugins/zsh-colorize
+git clone https://github.com/p1r473/zsh-color-logging.git $ZSH_CUSTOM/plugins/zsh-color-logging
 ```
 
 ```zsh
 plugins=(
   #...
-  tab-title
+  zsh-color-logging
   )
 ```
 
 ### Manual
 
 ```zsh
-git clone https://github.com/p1r473/zsh-colorize $ZSH_CUSTOM/plugins
-source $ZSH_CUSTOM/plugins/zsh-colorize/zsh-colorize/plugin.zsh
+git clone https://github.com/p1r473/zsh-color-logging $ZSH_CUSTOM/plugins
+source $ZSH_CUSTOM/plugins/zsh-colorize/zsh-color-logging/zsh-color-logging.plugin.zsh
 ```
