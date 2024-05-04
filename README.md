@@ -1,5 +1,5 @@
 # zsh-color-logging
-provides a really easy to use logging library\
+provides a really easy to use logging library with notifications for pushbullet and pushover\\
 colorize various tools like tail head cat\
 also provides a color library
 
@@ -10,7 +10,7 @@ also provides a color library
 #ecrit "CRITICAL MESSAGE!"\
 #edumpvar HOSTNAME
 
-![image](https://github.com/p1r473/zsh-color-logging/assets/9235633/271c31e2-53c7-4b8a-8920-2419ddbad052)
+![image](https://github.com/p1r473/zsh-color-logging/assets/9235633/b3835248-ac46-4be9-9004-1a89bb4dfb89)
 
 ### zinit
 
