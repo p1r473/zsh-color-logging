@@ -1,5 +1,5 @@
 # zsh-color-logging
-provides a really easy to use logging library with notifications for pushbullet and pushover\\
+provides a really easy to use logging library with notifications for pushbullet and pushover\
 colorize various tools like tail head cat\
 also provides a color library
 
