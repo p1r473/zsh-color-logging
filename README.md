@@ -10,7 +10,7 @@ also provides a color library
 #ecrit "CRITICAL MESSAGE!"\
 #edumpvar HOSTNAME\
 #eecho "This is an echo"\
-#esilent "This is silent"\
+#esilent "This is silent"
 
 ![image](https://github.com/p1r473/zsh-color-logging/assets/9235633/b3835248-ac46-4be9-9004-1a89bb4dfb89)
 
