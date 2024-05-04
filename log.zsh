@@ -52,8 +52,6 @@ function elog() {
     elif [[ -n "$script_name_provided" ]]; then
         # Use the provided script name, removing the file extension
         current_script=$(basename "$script_name_provided")
-        #echo "$script_name_provided"
-        #echo "$current_script"
     else
         # No script name provided; use a meaningful default
         if echo "$0" | grep -q -E '\.sh$|\.py$'; then
