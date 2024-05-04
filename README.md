@@ -4,15 +4,10 @@ colorize various tools like tail head cat
 also provides a color library
 
 #ewarn "this is a warning"
-
 #eerror "this is an error"
-
 #einfo "this is an information"
-
 #edebug "debugging"
-
 #ecrit "CRITICAL MESSAGE!"
-
 #edumpvar HOSTNAME
 
 ### zinit
