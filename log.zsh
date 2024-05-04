@@ -2,13 +2,14 @@
 
 LOG_LOCATION="/var/log/syslog"
 
-function edebug () { verb_lvl=$dbg_lvl elog "$0" "${White}DEBUG${NoColor} + $1" "$2" "$3"; }
-function eok ()    { verb_lvl=$ok_lvl elog "$0" "${Green}SUCCESS${NoColor} ++ $1" "$2" "$3"; }
-function einfo ()  { verb_lvl=$inf_lvl elog "$0" "${White}INFO${NoColor} +++ $1" "$2" "$3"; }
-function ewarn ()  { verb_lvl=$wrn_lvl elog "$0" "${Yellow}${Underlined}${Bold}WARNING${ResetAttr}${NoColor} ++++ $1" "$2" "$3"; }
+function edebug ()  { verb_lvl=$dbg_lvl elog "$0" "${White}DEBUG${NoColor} + $1" "$2" "$3"; }
+function eok ()     { verb_lvl=$ok_lvl elog "$0" "${Green}SUCCESS${NoColor} ++ $1" "$2" "$3"; }
+function einfo ()   { verb_lvl=$inf_lvl elog "$0" "${White}INFO${NoColor} +++ $1" "$2" "$3"; }
+function ewarn ()   { verb_lvl=$wrn_lvl elog "$0" "${Yellow}${Underlined}${Bold}WARNING${ResetAttr}${NoColor} ++++ $1" "$2" "$3"; }
 function enotify () { verb_lvl=$ntf_lvl elog "$0" "${Blue}NOTIFY${NoColor} +++++ $1" "$2" "$3"; }
-function eerror () { verb_lvl=$err_lvl elog "$0" "${LightOrange}${Underlined}${Bold}ERROR${ResetAttr}${NoColor} ++++++ $1" "$2" "$3"; }
-function ecrit ()  { verb_lvl=$crt_lvl elog "$0" "${Red}${Underlined}${Bold}CRITICAL${ResetAttr}${NoColor} +++++++  $1" "$2" "$3"; }
+function eerror ()  { verb_lvl=$err_lvl elog "$0" "${LightOrange}${Underlined}${Bold}ERROR${ResetAttr}${NoColor} ++++++ $1" "$2" "$3"; }
+function ecrit ()   { verb_lvl=$crt_lvl elog "$0" "${Red}${Underlined}${Bold}CRITICAL${ResetAttr}${NoColor} +++++++  $1" "$2" "$3"; }
+function eecho ()   { verb_lvl=$echo_lvl elog "$0" "${White}ECHO${NoColor} + $1" "$2" "$3"; }
 function esilent () { verb_lvl=$silent_lvl elog "$0" "$1" "$2" "$3"; }
 
 function edumpvar() {
@@ -31,14 +32,6 @@ function edumpvar() {
         fi
     done
 }
-
-# Special handling for edumpvar due to its unique behavior
-function edumpvar_original () {
-    for var in $@ ; do
-        edebug "$var=${!var}"
-    done
-}
-
 
 function elog() {
     local message="$2"
