@@ -1,6 +1,7 @@
 # zsh-colorize
+provides a really easy to use logging library
 colorize various tools like tail head cat
-also provides a color library 
+also provides a color library
 
 ### zinit
 
