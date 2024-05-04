@@ -10,6 +10,8 @@ also provides a color library
 #ecrit "CRITICAL MESSAGE!"\
 #edumpvar HOSTNAME
 
+![image](https://github.com/p1r473/zsh-color-logging/assets/9235633/271c31e2-53c7-4b8a-8920-2419ddbad052)
+
 ### zinit
 
 ```zsh
