@@ -1,9 +1,6 @@
 # zsh-colorize
 colorize various tools like tail head cat
-
-# zsh-colorize
-Updates current tab name in screen/tmux/byobu to whatever dir your in or command youre running
-
+also provides a color library 
 
 ### zinit
 
