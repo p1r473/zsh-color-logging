@@ -1,4 +1,4 @@
-#!/bin/zsh 
+#!/bin/zsh
 
 LOG_LOCATION="/var/log/syslog"
 
@@ -71,8 +71,10 @@ function elog() {
     # Logging logic
     if [ $verbosity -ge $verb_lvl ]; then
         logger -p local0.notice -t "$current_script" "$message"
+        echo -e "$msg"
+    elif [ "$echo_if_nodebug" = true ]; then
+        echo -e "$msg"
     fi
-    echo -e "$msg"
 
     # Notification logic
     if [[ "$notify" == "true" ]] && [ $push_level -ge $verb_lvl ]; then
