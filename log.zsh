@@ -71,8 +71,8 @@ function elog() {
     # Logging logic
     if [ $verbosity -ge $verb_lvl ]; then
         logger -p local0.notice -t "$current_script" "$message"
-        echo -e "$msg"
     fi
+    echo -e "$msg"
 
     # Notification logic
     if [[ "$notify" == "true" ]] && [ $push_level -ge $verb_lvl ]; then
