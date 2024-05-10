@@ -1,3 +1,4 @@
+local SCRIPT_DIR
 # Detect shell and source files accordingly
 if [ -n "$BASH_VERSION" ]; then
     SCRIPT_DIR=$(dirname "$(realpath "${BASH_SOURCE[0]}")")
