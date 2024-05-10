@@ -86,14 +86,16 @@ function elog() {
 
 function Pushover {
     local msg=$1
-    curl -s --form-string "token=$YOUR_PUSHOVER_API_TOKEN" --form-string "user=$YOUR_PUSHOVER_USER_KEY" --form-string "message=$1 on server $(hostname)" https://api.pushover.net/1/messages.json &> /dev/null 
+    if [[ -n "$YOUR_PUSHOVER_API_TOKEN" && -n "$YOUR_PUSHOVER_USER_KEY" ]]; then
+        curl -s --form-string "token=$YOUR_PUSHOVER_API_TOKEN" --form-string "user=$YOUR_PUSHOVER_USER_KEY" --form-string "message=$msg on server $(hostname)" https://api.pushover.net/1/messages.json &> /dev/null
+    fi
 }
 
 function Pushbullet {
     local msg=$1
-    curl --silent -u "$YOUR_PUSHBULLET_API_TOKEN" -d type="note" -d body="$1 on server $(hostname)" -d title="$1 on server $(hostname)" 'https://api.pushbullet.com/v2/pushes' &> /dev/null
+    if [[ -n "$YOUR_PUSHBULLET_API_TOKEN" ]]; then
+        curl --silent -u "$YOUR_PUSHBULLET_API_TOKEN" -d type="note" -d body="$msg on server $(hostname)" -d title="$msg on server $(hostname)" 'https://api.pushbullet.com/v2/pushes' &> /dev/null
 }
-
 function strip_colors() {
     #sed 's/\x1B\[[0-9;]*[mK]//g' | sed 's/\x1B\[38:5:[0-9:]*m//g' | sed 's/\x1B\[48:5:[0-9:]*m//g'
     sed 's/\x1B\[[0-9;:]*[mK]//g'
