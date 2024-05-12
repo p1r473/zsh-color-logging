@@ -1,7 +1,5 @@
 #!/bin/zsh
 
-LOG_LOCATION="/var/log/syslog"
-
 function edebug ()  { verb_lvl=$dbg_lvl elog "$0" "${White}DEBUG${NoColor} + $1" "$2" "$3"; }
 function eok ()     { verb_lvl=$ok_lvl elog "$0" "${Green}SUCCESS${NoColor} ++ $1" "$2" "$3"; }
 function einfo ()   { verb_lvl=$inf_lvl elog "$0" "${White}INFO${NoColor} +++ $1" "$2" "$3"; }
@@ -38,6 +36,8 @@ function elog() {
     local script_name_provided="$3"
     local notify="$4"
     local current_script=""
+    local msg=""
+    local push_msg=""
 
     # Attempt to determine current_script based on script_name_provided or fallback
     if [[ "$script_name_provided" == "True" || "$script_name_provided" == "true" || "$script_name_provided" == "False" || "$script_name_provided" == "false" ]]; then
@@ -78,7 +78,7 @@ function elog() {
 
     # Notification logic
     if [[ "$notify" == "true" ]] && [ $push_level -ge $verb_lvl ]; then
-        local push_msg=$(echo -e "$msg" | strip_colors)
+        push_msg=$(echo -e "$msg" | strip_colors)
         Pushover "$push_msg"
         Pushbullet "$push_msg"
     fi
@@ -95,9 +95,9 @@ function Pushbullet {
     local msg=$1
     if [[ -n "$YOUR_PUSHBULLET_API_TOKEN" ]]; then
         curl --silent -u "$YOUR_PUSHBULLET_API_TOKEN" -d type="note" -d body="$msg on server $(hostname)" -d title="$msg on server $(hostname)" 'https://api.pushbullet.com/v2/pushes' &> /dev/null
+    fi
 }
 function strip_colors() {
-    #sed 's/\x1B\[[0-9;]*[mK]//g' | sed 's/\x1B\[38:5:[0-9:]*m//g' | sed 's/\x1B\[48:5:[0-9:]*m//g'
     sed 's/\x1B\[[0-9;:]*[mK]//g'
 }
 
