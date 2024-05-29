@@ -8,17 +8,22 @@ colorize_output() {
 
 # Wrapper for 'tail' with color interpretation
 ctail() {
-  /usr/bin/tail "$@" | colorize_output
+  command tail "$@" | colorize_output
 }
 
 # Wrapper for 'head' with color interpretation
 chead() {
-  /usr/bin/head "$@" | colorize_output
+  command head "$@" | colorize_output
 }
 
 # Wrapper for 'cat' with color interpretation
 ccat() {
-  /usr/bin/cat "$@" | colorize_output
+  command cat "$@" | colorize_output
+}
+
+# Wrapper for 'less' with color interpretation
+cless() {
+  command less "$@" | colorize_output
 }
 
 #Reset
