@@ -2,8 +2,7 @@
 
 # Function to interpret color codes for any command output
 colorize_output() {
-  #sed -u 's/\\e/\x1b/g'
-  awk '{ gsub(/\\e/, "\x1b"); print }'
+  sed -u 's/\\e/\x1b/g; s/\\033/\x1b/g; s/#033/\x1b/g'
 }
 
 # Wrapper for 'tail' with color interpretation
