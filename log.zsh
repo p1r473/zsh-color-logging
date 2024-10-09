@@ -1,14 +1,14 @@
 #!/bin/zsh
 
-function edebug ()  { verb_lvl=$dbg_lvl elog "$0" "${White}DEBUG${NoColor} + $1" "$2" "$3"; }
-function eok ()     { verb_lvl=$ok_lvl elog "$0" "${Green}SUCCESS${NoColor} ++ $1" "$2" "$3"; }
-function einfo ()   { verb_lvl=$inf_lvl elog "$0" "${White}INFO${NoColor} +++ $1" "$2" "$3"; }
-function ewarn ()   { verb_lvl=$wrn_lvl elog "$0" "${Yellow}${Underlined}${Bold}WARNING${ResetAttr}${NoColor} ++++ $1" "$2" "$3"; }
-function enotify () { verb_lvl=$ntf_lvl elog "$0" "${Blue}NOTIFY${NoColor} +++++ $1" "$2" "$3"; }
-function eerror ()  { verb_lvl=$err_lvl elog "$0" "${LightOrange}${Underlined}${Bold}ERROR${ResetAttr}${NoColor} ++++++ $1" "$2" "$3"; }
-function ecrit ()   { verb_lvl=$crt_lvl elog "$0" "${Red}${Underlined}${Bold}CRITICAL${ResetAttr}${NoColor} +++++++  $1" "$2" "$3"; }
-function eecho ()   { verb_lvl=$echo_lvl elog "$0" "${White}ECHO${NoColor} + $1" "$2" "$3"; }
-function esilent () { verb_lvl=$silent_lvl elog "$0" "$1" "$2" "$3"; }
+function edebug ()  { verb_lvl=$dbg_lvl elog "$0" "${White}DEBUG${NoColor} + $1" "$2" "$3" "$4"; }
+function eok ()     { verb_lvl=$ok_lvl elog "$0" "${Green}SUCCESS${NoColor} ++ $1" "$2" "$3" "$4"; }
+function einfo ()   { verb_lvl=$inf_lvl elog "$0" "${White}INFO${NoColor} +++ $1" "$2" "$3" "$4"; }
+function ewarn ()   { verb_lvl=$wrn_lvl elog "$0" "${Yellow}${Underlined}${Bold}WARNING${ResetAttr}${NoColor} ++++ $1" "$2" "$3" "$4"; }
+function enotify () { verb_lvl=$ntf_lvl elog "$0" "${Blue}NOTIFY${NoColor} +++++ $1" "$2" "$3" "$4"; }
+function eerror ()  { verb_lvl=$err_lvl elog "$0" "${LightOrange}${Underlined}${Bold}ERROR${ResetAttr}${NoColor} ++++++ $1" "$2" "$3" "$4"; }
+function ecrit ()   { verb_lvl=$crt_lvl elog "$0" "${Red}${Underlined}${Bold}CRITICAL${ResetAttr}${NoColor} +++++++  $1" "$2" "$3" "$4"; }
+function eecho ()   { verb_lvl=$echo_lvl elog "$0" "${White}ECHO${NoColor} + $1" "$2" "$3" "$4"; }
+function esilent () { verb_lvl=$silent_lvl elog "$0" "$1" "$2" "$3" "$4"; }
 
 function edumpvar() {
     for var in "$@"; do
@@ -34,49 +34,51 @@ function edumpvar() {
 function elog() {
     local message="$2"
     local script_name_provided="$3"
-    local notify="$4"
+    local notify="${4:-false}"
+    local log_date_flag="${5:-false}"  # Default to false if not provided
     local current_script=""
     local msg=""
     local push_msg=""
+    local timestamp=""
 
-    # Attempt to determine current_script based on script_name_provided or fallback
-    if [[ "$script_name_provided" == "True" || "$script_name_provided" == "true" || "$script_name_provided" == "False" || "$script_name_provided" == "false" ]]; then
-        # $2 is a notification flag, not a script name
-        notify="$script_name_provided"
-        # Set to a default or meaningful name since it's being sourced/invoked in a way that doesn't provide it
-        if echo "$1" | grep -q -E '\.sh$|\.py$'; then
-            current_script=$(basename "$1" | sed 's/\.[^.]*$//' | sed 's/[\.\/]//g')
-        else
-            current_script=""
-        fi
-    elif [[ -n "$script_name_provided" ]]; then
-        # Use the provided script name, removing the file extension
-        current_script=$(basename "$script_name_provided")
-    else
-        # No script name provided; use a meaningful default
-        if echo "$0" | grep -q -E '\.sh$|\.py$'; then
-            current_script=$(basename "$1" | sed 's/\.[^.]*$//' | sed 's/[\.\/]//g')
-        else
-            current_script=""
-        fi
+    # Check if script_name_provided is an actual script name or just a placeholder
+    if [[ "$script_name_provided" == "false" || "$script_name_provided" == "true" || -z "$script_name_provided" ]]; then
+        # Reassign arguments if script_name_provided is just a placeholder or empty
+        script_name_provided=""
+        notify="${3:-false}"
+        log_date_flag="${4:-false}"
     fi
 
-    # Construct the message
-    if [[ -n "$current_script" ]]; then
-        msg="${current_script}: ${message}"
+    # Set the timestamp only if log_date_flag is true
+    if [[ "$log_date_flag" == "true" ]]; then
+        timestamp="$(date '+%b %e %T') "  # Include timestamp
+    fi
+
+    # Attempt to determine current_script based on script_name_provided or fallback
+    if [[ -n "$script_name_provided" && "$script_name_provided" != "false" ]]; then
+        current_script=$(basename "$script_name_provided")
     else
-        msg="${message}"
+        # No valid script name provided, fallback to empty
+        current_script=""
+    fi
+
+    # Construct the message with the timestamp if the flag is set
+    if [[ -n "$current_script" ]]; then
+        msg="${timestamp}${current_script}: ${message}"
+    else
+        msg="${timestamp}${message}"
     fi
 
     # Logging logic
     if [ $verbosity -ge $verb_lvl ]; then
+        # Use message without timestamp for logger
         logger -p local0.notice -t "$current_script" "$message"
-        echo -e "$msg"
+        echo -e "$msg"  # Print message with or without timestamp based on log_date_flag
     elif [ "$echo_if_nodebug" = true ]; then
-        echo -e "$msg"
+        echo -e "$msg"  # Print message with or without timestamp based on log_date_flag
     fi
 
-    # Notification logic
+    # Notification logic with full message and timestamp if enabled
     if [[ "$notify" == "true" ]] && [ $push_level -ge $verb_lvl ]; then
         push_msg=$(echo -e "$msg" | strip_colors)
         Pushover "$push_msg"
@@ -106,21 +108,21 @@ shift $((OPTIND-1))
 while getopts ":sVG" opt ; do
 # shellcheck disable=SC2220
         case $opt in
-	        S)
-	            verbosity=$silent_lvl
-	            edebug "-s specified: Silent mode"
-	            ;;
-	        V)
-	            verbosity=$inf_lvl
-	            edebug "-V specified: Verbose mode"
-	            ;;
-	        G)
-	            verbosity=$dbg_lvl
-	            edebug "-G specified: Debug mode"
-	            ;;
-	        \?)
-	        echo "Invalid option: -$OPTARG" >&2
-	        ;;
-    	esac
+            S)
+                verbosity=$silent_lvl
+                edebug "-s specified: Silent mode"
+                ;;
+            V)
+                verbosity=$inf_lvl
+                edebug "-V specified: Verbose mode"
+                ;;
+            G)
+                verbosity=$dbg_lvl
+                edebug "-G specified: Debug mode"
+                ;;
+            \?)
+            echo "Invalid option: -$OPTARG" >&2
+            ;;
+        esac
 done
 
