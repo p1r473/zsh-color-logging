@@ -1,14 +1,14 @@
 #!/bin/zsh
 
-function edebug ()  { verb_lvl=$dbg_lvl elog "$0" "${White}DEBUG${NoColor} + $1" "$2" "$3" "$4"; }
-function eok ()     { verb_lvl=$ok_lvl elog "$0" "${Green}SUCCESS${NoColor} ++ $1" "$2" "$3" "$4"; }
-function einfo ()   { verb_lvl=$inf_lvl elog "$0" "${White}INFO${NoColor} +++ $1" "$2" "$3" "$4"; }
-function ewarn ()   { verb_lvl=$wrn_lvl elog "$0" "${Yellow}${Underlined}${Bold}WARNING${ResetAttr}${NoColor} ++++ $1" "$2" "$3" "$4"; }
-function enotify () { verb_lvl=$ntf_lvl elog "$0" "${Blue}NOTIFY${NoColor} +++++ $1" "$2" "$3" "$4"; }
-function eerror ()  { verb_lvl=$err_lvl elog "$0" "${LightOrange}${Underlined}${Bold}ERROR${ResetAttr}${NoColor} ++++++ $1" "$2" "$3" "$4"; }
-function ecrit ()   { verb_lvl=$crt_lvl elog "$0" "${Red}${Underlined}${Bold}CRITICAL${ResetAttr}${NoColor} +++++++  $1" "$2" "$3" "$4"; }
-function eecho ()   { verb_lvl=$echo_lvl elog "$0" "${White}ECHO${NoColor} + $1" "$2" "$3" "$4"; }
-function esilent () { verb_lvl=$silent_lvl elog "$0" "$1" "$2" "$3" "$4"; }
+function edebug ()  { verb_lvl=$dbg_lvl elog "${White}DEBUG${NoColor} + $1" "$2" "$3"; }
+function eok ()     { verb_lvl=$ok_lvl elog "${Green}SUCCESS${NoColor} ++ $1" "$2" "$3"; }
+function einfo ()   { verb_lvl=$inf_lvl elog "${White}INFO${NoColor} +++ $1" "$2" "$3"; }
+function ewarn ()   { verb_lvl=$wrn_lvl elog "${Yellow}${Underlined}${Bold}WARNING${ResetAttr}${NoColor} ++++ $1" "$2" "$3"; }
+function enotify () { verb_lvl=$ntf_lvl elog "${Blue}NOTIFY${NoColor} +++++ $1" "$2" "$3"; }
+function eerror ()  { verb_lvl=$err_lvl elog "${LightOrange}${Underlined}${Bold}ERROR${ResetAttr}${NoColor} ++++++ $1" "$2" "$3"; }
+function ecrit ()   { verb_lvl=$crt_lvl elog "${Red}${Underlined}${Bold}CRITICAL${ResetAttr}${NoColor} +++++++  $1" "$2" "$3"; }
+function eecho ()   { verb_lvl=$echo_lvl elog "${White}ECHO${NoColor} + $1" "$2" "$3"; }
+function esilent () { verb_lvl=$silent_lvl elog "$1" "$2" "$3"; }
 
 function edumpvar() {
     for var in "$@"; do
@@ -32,10 +32,10 @@ function edumpvar() {
 }
 
 function elog() {
-    local message="$2"
-    local script_name_provided="$3"
-    local notify="${4:-false}"
-    local log_date_flag="${5:-false}"  # Default to false if not provided
+    local script_name_provided="$0"
+    local message="$1"
+    local notify="${2:-false}"
+    local log_date_flag="${3:-false}"  # Default to false if not provided
     local current_script=""
     local msg=""
     local push_msg=""
@@ -45,8 +45,8 @@ function elog() {
     if [[ "$script_name_provided" == "false" || "$script_name_provided" == "true" || -z "$script_name_provided" ]]; then
         # Reassign arguments if script_name_provided is just a placeholder or empty
         script_name_provided=""
-        notify="${3:-false}"
-        log_date_flag="${4:-false}"
+        notify="${2:-false}"
+        log_date_flag="${3:-false}"
     fi
 
     # Set the timestamp only if log_date_flag is true
