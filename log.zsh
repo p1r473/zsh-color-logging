@@ -1,14 +1,14 @@
 #!/bin/zsh
 
-function edebug ()  { verb_lvl=$dbg_lvl elog "${White}DEBUG${NoColor} + $1" "$2" "$3"; }
-function eok ()     { verb_lvl=$ok_lvl elog "${Green}SUCCESS${NoColor} ++ $1" "$2" "$3"; }
-function einfo ()   { verb_lvl=$inf_lvl elog "${White}INFO${NoColor} +++ $1" "$2" "$3"; }
-function ewarn ()   { verb_lvl=$wrn_lvl elog "${Yellow}${Underlined}${Bold}WARNING${ResetAttr}${NoColor} ++++ $1" "$2" "$3"; }
-function enotify () { verb_lvl=$ntf_lvl elog "${Blue}NOTIFY${NoColor} +++++ $1" "$2" "$3"; }
-function eerror ()  { verb_lvl=$err_lvl elog "${LightOrange}${Underlined}${Bold}ERROR${ResetAttr}${NoColor} ++++++ $1" "$2" "$3"; }
-function ecrit ()   { verb_lvl=$crt_lvl elog "${Red}${Underlined}${Bold}CRITICAL${ResetAttr}${NoColor} +++++++  $1" "$2" "$3"; }
-function eecho ()   { verb_lvl=$echo_lvl elog "${White}ECHO${NoColor} + $1" "$2" "$3"; }
-function esilent () { verb_lvl=$silent_lvl elog "$1" "$2" "$3"; }
+function edebug ()  { verb_lvl=$dbg_lvl elog "${White}DEBUG${NoColor} + $1" "$2" "$3" "$4" "$5"; }
+function eok ()     { verb_lvl=$ok_lvl elog "${Green}SUCCESS${NoColor} ++ $1" "$2" "$3" "$4" "$5"; }
+function einfo ()   { verb_lvl=$inf_lvl elog "${White}INFO${NoColor} +++ $1" "$2" "$3" "$4" "$5"; }
+function ewarn ()   { verb_lvl=$wrn_lvl elog "${Yellow}${Underlined}${Bold}WARNING${ResetAttr}${NoColor} ++++ $1" "$2" "$3" "$4" "$5"; }
+function enotify () { verb_lvl=$ntf_lvl elog "${Blue}NOTIFY${NoColor} +++++ $1" "$2" "$3" "$4" "$5"; }
+function eerror ()  { verb_lvl=$err_lvl elog "${LightOrange}${Underlined}${Bold}ERROR${ResetAttr}${NoColor} ++++++ $1" "$2" "$3" "$4" "$5"; }
+function ecrit ()   { verb_lvl=$crt_lvl elog "${Red}${Underlined}${Bold}CRITICAL${ResetAttr}${NoColor} +++++++  $1" "$2" "$3" "$4" "$5"; }
+function eecho ()   { verb_lvl=$echo_lvl elog "${White}ECHO${NoColor} + $1" "$2" "$3" "$4" "$5"; }
+function esilent () { verb_lvl=$silent_lvl elog "$1" "$2" "$3" "$4" "$5"; }
 
 function edumpvar() {
     for var in "$@"; do
@@ -32,21 +32,24 @@ function edumpvar() {
 }
 
 function elog() {
-    local script_name_provided="$0"
+    local current_script="$0"
     local message="$1"
     local notify="${2:-false}"
-    local log_date_flag="${3:-false}"  # Default to false if not provided
-    local current_script=""
+    local log_date_flag="${3:-false}"
+    local log="${4:-true}"
+    local echo="${5:-true}"
     local msg=""
     local push_msg=""
     local timestamp=""
 
-    # Check if script_name_provided is an actual script name or just a placeholder
-    if [[ "$script_name_provided" == "false" || "$script_name_provided" == "true" || -z "$script_name_provided" ]]; then
-        # Reassign arguments if script_name_provided is just a placeholder or empty
-        script_name_provided=""
+    # Check if current_script is an actual script name or just a placeholder
+    if [[ "$current_script" == "false" || "$current_script" == "true" || -z "$current_script" ]]; then
+        # Reassign arguments if current_script is just a placeholder or empty
+        current_script=""
         notify="${2:-false}"
         log_date_flag="${3:-false}"
+        log="${4:-true}"
+        echo="${5:-true}"
     fi
 
     # Set the timestamp only if log_date_flag is true
@@ -54,9 +57,9 @@ function elog() {
         timestamp="$(date '+%b %e %T') "  # Include timestamp
     fi
 
-    # Attempt to determine current_script based on script_name_provided or fallback
-    if [[ -n "$script_name_provided" && "$script_name_provided" != "false" ]]; then
-        current_script=$(basename "$script_name_provided")
+    # Attempt to determine current_script based on current_script or fallback
+    if [[ -n "$current_script" && "$current_script" != "false" ]]; then
+        current_script=$(basename "$current_script")
     else
         # No valid script name provided, fallback to empty
         current_script=""
@@ -64,18 +67,23 @@ function elog() {
 
     # Construct the message with the timestamp if the flag is set
     if [[ -n "$current_script" ]]; then
-        msg="${timestamp}${current_script}: ${message}"
+        msg="${timestamp} ${current_script}: ${message}"
     else
-        msg="${timestamp}${message}"
+        msg="${timestamp} ${message}"
     fi
 
     # Logging logic
     if [ $verbosity -ge $verb_lvl ]; then
-        # Use message without timestamp for logger
-        logger -p local0.notice -t "$current_script" "$message"
-        echo -e "$msg"  # Print message with or without timestamp based on log_date_flag
+        if [[ "$log" == "true" ]]; then
+            logger -p local0.notice -t "$current_script" "$message"
+        fi
+        if [[ "$echo" == "true" ]]; then
+            echo -e "$msg"
+        fi
     elif [ "$echo_if_nodebug" = true ]; then
-        echo -e "$msg"  # Print message with or without timestamp based on log_date_flag
+        if [[ "$echo" == "true" ]]; then
+            echo -e "$msg"
+        fi
     fi
 
     # Notification logic with full message and timestamp if enabled
