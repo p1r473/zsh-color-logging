@@ -104,7 +104,7 @@ function Pushover {
 function Pushbullet {
     local msg=$1
     if [[ -n "$YOUR_PUSHBULLET_API_TOKEN" ]]; then
-        curl --silent -u "$YOUR_PUSHBULLET_API_TOKEN" -d type="note" -d body="$msg on server $(hostname)" -d title="$msg on server $(hostname)" 'https://api.pushbullet.com/v2/pushes' &> /dev/null
+        curl --silent -X POST -H "Access-Token: $YOUR_PUSHBULLET_API_TOKEN" -H "Content-Type: application/json" -d "{\"type\":\"note\",\"title\":\"$msg on server $(hostname)\",\"body\":\"$msg on server $(hostname)\"}" "https://api.pushbullet.com/v2/pushes" &> /dev/null
     fi
 }
 function strip_colors() {
